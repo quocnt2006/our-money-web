@@ -45,6 +45,18 @@ Developer workflows & checks
 - Verify API URL overrides by editing [src/environments/environment.ts](src/environments/environment.ts).
 - Keep changes minimal and focused; this repo follows simple, single-responsibility components.
 
+Deployment (Azure Static Web Apps)
+
+- A GitHub Actions workflow is provided to build and deploy the app to Azure Static Web Apps on push to `main`: [.github/workflows/azure-static-web-apps.yml](.github/workflows/azure-static-web-apps.yml).
+- The workflow builds the Angular app with `npm run build` and deploys the `dist/our-money-web` output folder.
+- Before the workflow can deploy, add a repository secret named `AZURE_STATIC_WEB_APPS_API_TOKEN` containing the deployment token from the Azure Static Web Apps resource (or use the token generated when creating a Static Web App via the GitHub integration).
+- To trigger deployment manually or test locally, run:
+
+	- Install deps: `npm ci`
+	- Build: `npm run build`
+
+Note: Azure Static Web Apps expects the built files at `dist/your-project-name` — this project uses `dist/our-money-web` by default.
+
 Proxy / CORS during development
 
 - A local reverse-proxy is provided at `proxy.conf.json` to forward `/api` requests to the backend at `http://localhost:5000` and to rewrite cookie domains. The `start` script has been updated to use it: `npm run start` will run `ng serve --proxy-config proxy.conf.json`.
