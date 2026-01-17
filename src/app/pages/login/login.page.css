@@ -1,13 +1,148 @@
-:host{display:block;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#0f172a}
-.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:linear-gradient(180deg,#f8fafc,#eef2ff)}
-.card{width:100%;max-width:420px;background:#ffffff;border-radius:12px;box-shadow:0 8px 30px rgba(15,23,42,0.08);padding:2rem;box-sizing:border-box}
-h1{margin:0 0 .25rem 0;font-size:1.25rem;color:#0b1220}
-.lead{margin:0 0 1rem 0;color:#475569;font-size:0.95rem}
-label{display:block;margin-top:0.75rem;font-size:0.875rem;color:#0b1220}
-input{width:100%;padding:0.75rem;border:1px solid #e6edf3;border-radius:8px;margin-top:0.25rem;font-size:0.95rem;box-sizing:border-box}
-input:focus{outline:none;box-shadow:0 0 0 4px rgba(99,102,241,0.08);border-color:#6366f1}
-.error{color:#b91c1c;font-size:0.85rem;margin-top:0.35rem}
-button.primary{width:100%;margin-top:1.25rem;padding:0.75rem;border-radius:10px;border:0;background:linear-gradient(90deg,#2563eb,#7c3aed);color:white;font-weight:600;cursor:pointer;font-size:0.98rem}
-button.primary:disabled{opacity:0.6;cursor:not-allowed}
-button.secondary{width:100%;margin-top:0.5rem;padding:0.6rem;border-radius:10px;border:1px solid #e6edf3;background:white;color:#0b1220;cursor:pointer;font-size:0.98rem}
-.card-footer{margin-top:1rem;text-align:center;color:#94a3b8;font-size:0.82rem}
+:host {
+  display: block;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
+  color: #0f172a;
+}
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(180deg, #f8fafc, #eef2ff);
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* logo */
+.logo {
+  display: block;
+  width: 72px;
+  height: auto;
+  margin: 0 auto 1rem;
+}
+
+h1 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.25rem;
+  color: #0b1220;
+}
+
+.lead {
+  margin: 0 0 1rem 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+label {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: #0b1220;
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e6edf3;
+  border-radius: 8px;
+  margin-top: 0.25rem;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
+  border-color: #6366f1;
+}
+
+.error {
+  color: #b91c1c;
+  font-size: 0.85rem;
+  margin-top: 0.35rem;
+}
+
+button.primary {
+  width: 100%;
+  margin-top: 1.25rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 0;
+  background: linear-gradient(90deg, #2563eb, #7c3aed);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.98rem;
+}
+
+button.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button.secondary {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  border-radius: 10px;
+  border: 1px solid #e6edf3;
+  background: white;
+  color: #0b1220;
+  cursor: pointer;
+  font-size: 0.98rem;
+}
+
+.card-footer {
+  margin-top: 1rem;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.82rem;
+}
+
+/* Responsive adjustments */
+@media (min-width: 640px) {
+  .card {
+    max-width: 480px;
+    padding: 2.5rem;
+  }
+
+  .logo {
+    width: 100px;
+  }
+
+  h1 {
+    font-size: 1.375rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .card {
+    padding: 1.25rem;
+    border-radius: 10px;
+  }
+
+  input {
+    padding: 0.6rem;
+  }
+
+  button.primary {
+    padding: 0.65rem;
+  }
+}

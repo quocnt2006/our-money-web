@@ -81,6 +81,11 @@ Notes / constraints discovered
 - Tailwind/postcss dev deps exist but styles are primarily component-scoped.
  - File naming and locations matter: components use the `.page.ts` convention, templates `.page.html`, styles `.page.css`, services under `src/app/services`.
 
+UI updates:
+
+- **Login & Signup:** Added `logo.png` to the top of the login and signup pages and improved responsive behavior across devices. The image lives in the `public` folder so it is copied into the build output and referenced as `logo.png` from the templates.
+- **Responsive rules:** Page cards now adjust `max-width`, padding, and logo size via media queries to look good on phones and larger screens.
+
 **Linting & Husky**
 
 - **Tooling:** ESLint + `@typescript-eslint` for TypeScript, Prettier for formatting, `husky` + `lint-staged` for git hooks. Recommended version ranges: `eslint@^8`, `@typescript-eslint/*@^6`, `eslint-config-prettier@^9`, `husky@^8`, `lint-staged@^14` — these are compatible with TypeScript 5.x and Angular 21.
