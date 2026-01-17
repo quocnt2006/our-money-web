@@ -17,5 +17,5 @@ export const authReducer = createReducer(
   on(AuthActions.refreshToken, (state) => ({ ...state, loading: true })),
   on(AuthActions.refreshTokenSuccess, (state) => ({ ...state, isAuthenticated: true, loading: false, error: null })),
   on(AuthActions.refreshTokenFailure, (state, { error }) => ({ ...state, loading: false, error })),
-  on(AuthActions.logout, (state) => ({ isAuthenticated: false, loading: false, error: null }))
+  on(AuthActions.logout, () => ({ isAuthenticated: false, loading: false, error: null }))
 );

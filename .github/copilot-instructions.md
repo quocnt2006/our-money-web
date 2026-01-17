@@ -81,5 +81,38 @@ Notes / constraints discovered
 - Tailwind/postcss dev deps exist but styles are primarily component-scoped.
  - File naming and locations matter: components use the `.page.ts` convention, templates `.page.html`, styles `.page.css`, services under `src/app/services`.
 
+**Linting & Husky**
+
+- **Tooling:** ESLint + `@typescript-eslint` for TypeScript, Prettier for formatting, `husky` + `lint-staged` for git hooks. Recommended version ranges: `eslint@^8`, `@typescript-eslint/*@^6`, `eslint-config-prettier@^9`, `husky@^8`, `lint-staged@^14` — these are compatible with TypeScript 5.x and Angular 21.
+- **Install:** run:
+
+```bash
+npm install -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-config-prettier lint-staged husky
+```
+- **package.json scripts:** add or update:
+
+```json
+"prepare": "husky install",
+"lint": "eslint \"src/**/*.{ts,js,html}\"",
+"lint:fix": "eslint --fix \"src/**/*.{ts,js,html}\""
+```
+- **Husky + lint-staged setup:** after installing dev deps run:
+
+```bash
+npx husky install
+npx husky add .husky/pre-commit "npx --no -- lint-staged"
+```
+And add a `lint-staged` entry to `package.json`:
+
+```json
+"lint-staged": {
+	"src/**/*.{ts,js,html,css}": [
+		"eslint --fix",
+		"prettier --write"
+	]
+}
+```
+- **Usage:** `npm run lint` to check, `npm run lint:fix` to auto-fix. Keep ESLint configs under project root (e.g., `.eslintrc.cjs` / `.eslintrc.json`) and prefer `eslint-config-prettier` to avoid conflicts with Prettier.
+
 If anything is ambiguous, ask for the desired UX or API contract before changing auth or routes.
 

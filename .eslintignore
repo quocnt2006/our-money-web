@@ -1,0 +1,8 @@
+node_modules/
+dist/
+out/
+.idea/
+.vscode/
+coverage/
+public/
+.husky/

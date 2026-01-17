@@ -13,16 +13,24 @@ export class AuthEffects {
   private http = inject(HttpClient);
   private router = inject(Router);
 
+  private getErrorMessage(err: unknown, fallback: string): string {
+    if (err instanceof Error) return err.message;
+    if (typeof err === 'string') return err;
+    const maybe = (err as { message?: unknown }).message;
+    if (typeof maybe === 'string') return maybe;
+    return fallback;
+  }
+
   login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.login),
       switchMap(({ email, password }) =>
-        this.http.post<any>(`${environment.apiUrl}/api/Auth/login`, { email, password }, { withCredentials: true }).pipe(
-          map(() => {
-            // server should set HttpOnly cookies for access/refresh
-            return AuthActions.loginSuccess({ accessToken: undefined as any, refreshToken: undefined as any });
+        this.http.post<{ token: string; refreshToken?: string }>(`${environment.apiUrl}/api/Auth/login`, { email, password }, { withCredentials: true }).pipe(
+          map((res) => {
+            // response shape: { refreshToken, token }
+            return AuthActions.loginSuccess({ accessToken: res.token ?? '', refreshToken: res.refreshToken });
           }),
-          catchError((err) => of(AuthActions.loginFailure({ error: err?.message || 'Login failed' })))
+          catchError((err) => of(AuthActions.loginFailure({ error: this.getErrorMessage(err, 'Login failed') })))
         )
       )
     )
@@ -32,12 +40,12 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(AuthActions.signup),
       switchMap(({ name, email, password }) =>
-        this.http.post<any>(`${environment.apiUrl}/api/Auth/register`, { name, email, password, familyId: 0, role: 'user' }, { withCredentials: true }).pipe(
+        this.http.post(`${environment.apiUrl}/api/Auth/register`, { name, email, password, familyId: 0, role: 'user' }, { withCredentials: true }).pipe(
           map(() => {
             // server should set HttpOnly cookies for access/refresh
-            return AuthActions.signupSuccess({ accessToken: undefined as any, refreshToken: undefined as any });
+            return AuthActions.signupSuccess({ accessToken: '', refreshToken: ''});
           }),
-          catchError((err) => of(AuthActions.signupFailure({ error: err?.message || 'Signup failed' })))
+          catchError((err) => of(AuthActions.signupFailure({ error: this.getErrorMessage(err, 'Signup failed') })))
         )
       )
     )
@@ -47,7 +55,7 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(AuthActions.loginSuccess, AuthActions.signupSuccess),
-        tap(() => this.router.navigate(['/dashboard']))
+        tap(() => void this.router.navigate(['/dashboard']))
       ),
     { dispatch: false }
   );
@@ -57,9 +65,9 @@ export class AuthEffects {
       ofType(AuthActions.refreshToken),
       switchMap(() =>
         // call refresh endpoint with credentials so server can read HttpOnly refresh cookie
-        this.http.post<any>(`${environment.apiUrl}/api/Auth/refresh`, {}, { withCredentials: true }).pipe(
-          map(() => AuthActions.refreshTokenSuccess({ accessToken: undefined as any, refreshToken: undefined as any })),
-          catchError((err) => of(AuthActions.refreshTokenFailure({ error: err?.message || 'Refresh failed' })))
+        this.http.post(`${environment.apiUrl}/api/Auth/refresh`, {}, { withCredentials: true }).pipe(
+          map(() => AuthActions.refreshTokenSuccess({ accessToken: '', refreshToken: '' })),
+          catchError((err) => of(AuthActions.refreshTokenFailure({ error: this.getErrorMessage(err, 'Refresh failed') })))
         )
       )
     )
@@ -72,10 +80,10 @@ export class AuthEffects {
         switchMap(() =>
           // inform server to clear cookies if endpoint exists; include credentials
           this.http.post(`${environment.apiUrl}/api/Auth/logout`, {}, { withCredentials: true }).pipe(
-            tap(() => this.router.navigate(['/'])),
+            tap(() => void this.router.navigate(['/'])),
             catchError(() => {
               // even if server logout fails, navigate to login
-              this.router.navigate(['/']);
+              void this.router.navigate(['/']);
               return of(null);
             })
           )
@@ -84,5 +92,5 @@ export class AuthEffects {
     { dispatch: false }
   );
 
-  constructor() {}
+  constructor() { }
 }
