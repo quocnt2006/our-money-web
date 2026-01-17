@@ -26,7 +26,7 @@ Key integration points & examples
 	 - Selectors: [src/app/store/auth.selectors.ts](src/app/store/auth.selectors.ts)
 	 - Models: [src/app/store/auth.models.ts](src/app/store/auth.models.ts)
 	 - Pages dispatch `login` / `signup` actions and select loading/error from the store (see [src/app/pages/login/login.page.ts](src/app/pages/login/login.page.ts) and [src/app/pages/signup/signup.page.ts](src/app/pages/signup/signup.page.ts)).
- - Interceptor: an `AuthInterceptor` is registered to attempt token refresh on 401 responses when using HttpOnly cookies: [src/app/interceptors/auth.interceptor.ts](src/app/interceptors/auth.interceptor.ts). The app now relies on HttpOnly cookies for access/refresh tokens and sends credentials with auth requests.
+ - Interceptor: an `AuthInterceptor` is registered to attach `Authorization: Bearer <token>` to outgoing API requests and to attempt a refresh on 401 responses: [src/app/interceptors/auth.interceptor.ts](src/app/interceptors/auth.interceptor.ts). The app stores `accessToken` and `refreshToken` in the auth NgRx state and effects perform token exchange with the backend.
 - Router: top-level routes in [src/app/app.routes.ts](src/app/app.routes.ts) — root -> login, `/dashboard` -> Dashboard.
  - Registration: sign-up POST endpoint is `${environment.apiUrl}/api/Auth/register`. The client helper lives at [src/app/services/user.service.ts](src/app/services/user.service.ts) and the page is [src/app/pages/signup.page.ts](src/app/pages/signup.page.ts).
 	- Register payload example: `{ name: string, email: string, password: string, familyId: 0, role: 'user' }`.
@@ -83,7 +83,7 @@ Quick pointers for edits
 
 - Adding a page: create `src/app/pages/<name>.page.ts`, `<name>.page.html`, `<name>.page.css`; register route in [src/app/app.routes.ts](src/app/app.routes.ts).
 - Adding HTTP helpers: place services under `src/app/services`, use `inject(HttpClient)` and `environment.apiUrl` for base URL (see `src/app/services/user.service.ts`).
- - Adding HTTP helpers: place services under `src/app/services`, use `inject(HttpClient)` and `environment.apiUrl` for base URL (see `src/app/services/user.service.ts`). The `UserService` includes `login`, `register`, and `refresh` helpers that set `{ withCredentials: true }` so the browser sends/receives HttpOnly cookies. Effects perform the calls; prefer using NgRx actions for auth flows.
+ - Adding HTTP helpers: place services under `src/app/services`, use `inject(HttpClient)` and `environment.apiUrl` for base URL (see `src/app/services/user.service.ts`). The `UserService` includes `login`, `register`, and `refresh` helpers that exchange credentials for bearer tokens (`{ token, refreshToken }`). Effects store these tokens in NgRx and the `AuthInterceptor` attaches `Authorization` headers for API calls; prefer using NgRx actions for auth flows.
 
 What agents should do first
 
@@ -102,6 +102,17 @@ UI updates:
 
 - **Login & Signup:** Added `logo.png` to the top of the login and signup pages and improved responsive behavior across devices. The image lives in the `public` folder so it is copied into the build output and referenced as `logo.png` from the templates.
 - **Responsive rules:** Page cards now adjust `max-width`, padding, and logo size via media queries to look good on phones and larger screens.
+
+Routing & Auth:
+
+- **Default route:** `/` redirects to `/dashboard` (dashboard is the app default). The dashboard route is protected by an `AuthGuard` that checks the NgRx `isAuthenticated` state and redirects unauthenticated users to `/login`.
+- **Guard:** `src/app/guards/auth.guard.ts` — uses `selectIsAuthenticated` and redirects to `/login` when not authenticated.
+
+Layout:
+
+- **Sidebar component:** `src/app/components/sidebar` contains a standalone `SidebarComponent` used by the dashboard. The sidebar appears as a left navigation on wide screens and as a slide-in drawer on small screens. The sidebar includes a `Log out` button which dispatches the `logoutRequested` action; an effect sends the Authorization header to the backend and then the store clears tokens and navigates to `/login`.
+- **Dashboard:** The dashboard page includes a top-right profile icon button that toggles the sidebar. Clicking outside the sidebar closes it.
+ - **Dashboard:** The dashboard page includes a top-right profile icon button that toggles the sidebar. Clicking outside the sidebar closes it. The sidebar is visible by default on larger screens and uses Tailwind classes for styling; on small screens it behaves as a slide-in drawer with an overlay.
 
 **Linting & Husky**
 

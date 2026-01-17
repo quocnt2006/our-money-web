@@ -12,4 +12,7 @@ export const refreshToken = createAction('[Auth] Refresh Token');
 export const refreshTokenSuccess = createAction('[Auth] Refresh Token Success', props<{ accessToken: string; refreshToken?: string }>());
 export const refreshTokenFailure = createAction('[Auth] Refresh Token Failure', props<{ error: string }>());
 
+export const logoutRequested = createAction('[Auth] Logout Requested');
+
 export const logout = createAction('[Auth] Logout');
+export const logoutFailure = createAction('[Auth] Logout Failure', props<{ error: string }>());

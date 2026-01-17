@@ -1,0 +1,26 @@
+<ng-container>
+  <!-- overlay for mobile when sidebar is open -->
+  <div *ngIf="open" class="fixed inset-0 bg-black/40 md:hidden z-30" (click)="close.emit()"></div>
+
+  <!-- sidebar: hidden by default on small screens, visible on md+ -->
+  <aside
+    class="fixed inset-y-0 left-0 w-64 bg-slate-900 text-white transform -translate-x-full md:translate-x-0 transition-transform z-40"
+    [class.translate-x-0]="open"
+    role="navigation"
+    aria-hidden="{{ !open }}"
+  >
+    <div class="flex flex-col h-full p-4">
+      <div class="text-lg font-semibold mb-4">OurMoney</div>
+      <nav class="flex-0">
+        <ul class="space-y-2">
+          <li><a class="text-slate-200 hover:text-white" routerLink="/dashboard">Dashboard</a></li>
+        </ul>
+      </nav>
+
+      <div class="flex-1"></div>
+      <button class="bg-red-500 hover:bg-red-600 text-white rounded px-3 py-2" (click)="logout()">
+        Log out
+      </button>
+    </div>
+  </aside>
+</ng-container>

@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { Store } from '@ngrx/store';
@@ -24,10 +24,16 @@ export class SignupPage {
   protected readonly loading = signal(false);
 
   protected readonly form = this.fb.group({
-    name: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]]
+    name: ['', [Validators.required.bind(Validators)]],
+    email: ['', [Validators.required.bind(Validators), Validators.email.bind(Validators)]],
+    password: ['', [Validators.required.bind(Validators)]],
+    confirmPassword: ['', [Validators.required.bind(Validators)]]
   });
+
+  constructor() {
+    this.sub.add(this.store.select(selectAuthLoading).subscribe((v) => this.loading.set(!!v)));
+    this.form.setValidators(this.passwordsMatchValidator);
+  }
 
   submit() {
     if (this.form.invalid) return;
@@ -35,8 +41,16 @@ export class SignupPage {
     this.store.dispatch(signup({ name, email, password }));
   }
 
-  constructor() {
-    this.sub.add(this.store.select(selectAuthLoading).subscribe((v) => this.loading.set(!!v)));
+
+  private passwordsMatchValidator(this: void, control: AbstractControl): ValidationErrors | null {
+    const pwdCtrl = control.get('password');
+    const confirmCtrl = control.get('confirmPassword');
+
+    const pwd = typeof pwdCtrl?.value === 'string' ? pwdCtrl.value : null;
+    const confirm = typeof confirmCtrl?.value === 'string' ? confirmCtrl.value : null;
+
+    if (pwd !== null && confirm !== null && pwd !== confirm) return { passwordsMismatch: true };
+    return null;
   }
 
   ngOnDestroy() {

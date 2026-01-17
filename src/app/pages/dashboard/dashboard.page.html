@@ -1,6 +1,12 @@
+<app-sidebar [open]="sidebarOpen" (close)="closeSidebar()"></app-sidebar>
+
 <main class="dashboard-page">
-  <div style="padding:2rem">
+  <header class="topbar">
+    <button class="profile-btn" aria-label="Open navigation" (click)="toggleSidebar()">👤</button>
     <h2>Dashboard</h2>
+  </header>
+
+  <div class="content" (click)="closeSidebar()">
     <p>Welcome — you are logged in.</p>
   </div>
 </main>
