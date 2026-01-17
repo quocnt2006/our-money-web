@@ -42,7 +42,24 @@ Project-specific conventions
 Developer workflows & checks
 
 - Use `npm run start` for development; app runs at `http://localhost:4200` by default.
-- Verify API URL overrides by editing [src/environments/environment.ts](src/environments/environment.ts).
+ - Use `npm run start` for development; app runs at `http://localhost:4200` by default.
+ - Verify API URL overrides by editing [src/environments/environment.ts](src/environments/environment.ts) for development and [src/environments/environment.prod.ts](src/environments/environment.prod.ts) for production. For this project set the following `apiUrl` values:
+
+```ts
+// src/environments/environment.ts
+export const environment = {
+	production: false,
+	apiUrl: 'http://localhost:5000'
+};
+
+// src/environments/environment.prod.ts
+export const environment = {
+	production: true,
+	apiUrl: 'https://our-service-api-eucxg9fgfzd7bjbm.canadacentral-01.azurewebsites.net/'
+};
+```
+
+These values ensure the app uses `http://localhost:5000` during local development and `https://our-service-api-eucxg9fgfzd7bjbm.canadacentral-01.azurewebsites.net/` in production builds. Services and effects should reference `environment.apiUrl` when building request URLs.
 - Keep changes minimal and focused; this repo follows simple, single-responsibility components.
 
 Deployment (Azure Static Web Apps)
